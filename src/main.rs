@@ -1,4 +1,4 @@
-use dotenv::dotenv;
+// use dotenv::dotenv;
 use postgres::{ Client, NoTls };
 use std::net::{ TcpListener, TcpStream };
 use std::io::{ Read, Write };
@@ -22,7 +22,7 @@ const INTERNAL_SERVER_ERROR: &str = "HTTP/1.1 500 INTERNAL SERVER ERROR\r\n\r\n"
 
 //main function
 fn main() {
-    dotenv().expect("Unable to load environment variables from .env file");
+    // dotenv().expect("Unable to load environment variables from .env file");
     let database_url: String = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
 
     //Set database
