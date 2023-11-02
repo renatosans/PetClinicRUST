@@ -1,8 +1,8 @@
+use dotenv::dotenv;
 use postgres::{ Client, NoTls };
-use postgres::Error as PostgresError;
 use std::net::{ TcpListener, TcpStream };
 use std::io::{ Read, Write };
-use std::env;
+
 
 #[macro_use]
 extern crate serde_derive;
@@ -15,9 +15,6 @@ struct User {
     email: String,
 }
 
-//DATABASE_URL
-const DB_URL: &str = env!("DATABASE_URL");
-
 //constants
 const OK_RESPONSE: &str = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n";
 const NOT_FOUND: &str = "HTTP/1.1 404 NOT FOUND\r\n\r\n";
@@ -25,11 +22,17 @@ const INTERNAL_SERVER_ERROR: &str = "HTTP/1.1 500 INTERNAL SERVER ERROR\r\n\r\n"
 
 //main function
 fn main() {
+    dotenv().expect("Unable to load environment variables from .env file");
+    let database_url: String = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
+
     //Set database
-    if let Err(e) = set_database() {
-        println!("Error: {}", e);
-        return;
-    }
+    let mut client = Client::connect(database_url.as_str(), NoTls).expect("Failed to connect to database");
+    let _batch_result = client.batch_execute(
+        "CREATE TABLE IF NOT EXISTS users(
+            id SERIAL PRIMARY KEY,
+            name VARCHAR NOT NULL,
+            email VARCHAR NOT NULL)")
+    .expect("Failed to create database table");
 
     //start server and print port
     let listener = TcpListener::bind(format!("0.0.0.0:8080")).unwrap();
@@ -39,7 +42,7 @@ fn main() {
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
-                handle_client(stream);
+                handle_client(&database_url, stream);
             }
             Err(e) => {
                 println!("Error: {}", e);
@@ -49,7 +52,7 @@ fn main() {
 }
 
 //handle_client function
-fn handle_client(mut stream: TcpStream) {
+fn handle_client(database_url: &str, mut stream: TcpStream) {
     let mut buffer = [0; 1024];
     let mut request = String::new();
 
@@ -58,11 +61,11 @@ fn handle_client(mut stream: TcpStream) {
             request.push_str(String::from_utf8_lossy(&buffer[..size]).as_ref());
 
             let (status_line, content) = match &*request {
-                r if r.starts_with("POST /users") => handle_post_request(r),
-                r if r.starts_with("GET /users/") => handle_get_request(r),
-                r if r.starts_with("GET /users") => handle_get_all_request(r),
-                r if r.starts_with("PUT /users/") => handle_put_request(r),
-                r if r.starts_with("DELETE /users/") => handle_delete_request(r),
+                r if r.starts_with("POST /users") => handle_post_request(database_url, r),
+                r if r.starts_with("GET /users/") => handle_get_request(database_url, r),
+                r if r.starts_with("GET /users") => handle_get_all_request(database_url, r),
+                r if r.starts_with("PUT /users/") => handle_put_request(database_url, r),
+                r if r.starts_with("DELETE /users/") => handle_delete_request(database_url, r),
                 _ => (NOT_FOUND.to_string(), "404 Not Found".to_string()),
             };
 
@@ -77,8 +80,8 @@ fn handle_client(mut stream: TcpStream) {
 //CONTROLLERS
 
 //handle_post_request function
-fn handle_post_request(request: &str) -> (String, String) {
-    match (get_user_request_body(&request), Client::connect(DB_URL, NoTls)) {
+fn handle_post_request(database_url: &str, request: &str) -> (String, String) {
+    match (get_user_request_body(&request), Client::connect(database_url, NoTls)) {
         (Ok(user), Ok(mut client)) => {
             client
                 .execute(
@@ -94,8 +97,8 @@ fn handle_post_request(request: &str) -> (String, String) {
 }
 
 //handle_get_request function
-fn handle_get_request(request: &str) -> (String, String) {
-    match (get_id(&request).parse::<i32>(), Client::connect(DB_URL, NoTls)) {
+fn handle_get_request(database_url: &str, request: &str) -> (String, String) {
+    match (get_id(&request).parse::<i32>(), Client::connect(database_url, NoTls)) {
         (Ok(id), Ok(mut client)) =>
             match client.query_one("SELECT * FROM users WHERE id = $1", &[&id]) {
                 Ok(row) => {
@@ -115,8 +118,8 @@ fn handle_get_request(request: &str) -> (String, String) {
 }
 
 //handle_get_all_request function
-fn handle_get_all_request(request: &str) -> (String, String) {
-    match Client::connect(DB_URL, NoTls) {
+fn handle_get_all_request(database_url: &str, _request: &str) -> (String, String) {
+    match Client::connect(database_url, NoTls) {
         Ok(mut client) => {
             let mut users = Vec::new();
 
@@ -135,12 +138,12 @@ fn handle_get_all_request(request: &str) -> (String, String) {
 }
 
 //handle_put_request function
-fn handle_put_request(request: &str) -> (String, String) {
+fn handle_put_request(database_url: &str, request: &str) -> (String, String) {
     match
         (
             get_id(&request).parse::<i32>(),
             get_user_request_body(&request),
-            Client::connect(DB_URL, NoTls),
+            Client::connect(database_url, NoTls),
         )
     {
         (Ok(id), Ok(user), Ok(mut client)) => {
@@ -158,8 +161,8 @@ fn handle_put_request(request: &str) -> (String, String) {
 }
 
 //handle_delete_request function
-fn handle_delete_request(request: &str) -> (String, String) {
-    match (get_id(&request).parse::<i32>(), Client::connect(DB_URL, NoTls)) {
+fn handle_delete_request(database_url: &str, request: &str) -> (String, String) {
+    match (get_id(&request).parse::<i32>(), Client::connect(database_url, NoTls)) {
         (Ok(id), Ok(mut client)) => {
             let rows_affected = client.execute("DELETE FROM users WHERE id = $1", &[&id]).unwrap();
 
@@ -171,22 +174,6 @@ fn handle_delete_request(request: &str) -> (String, String) {
         }
         _ => (INTERNAL_SERVER_ERROR.to_string(), "Error".to_string()),
     }
-}
-
-//set_database function
-fn set_database() -> Result<(), PostgresError> {
-    //Connect to database
-    let mut client = Client::connect(DB_URL, NoTls)?;
-
-    //Create table
-    client.batch_execute(
-        "CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR NOT NULL,
-            email VARCHAR NOT NULL
-        )"
-    )?;
-    Ok(())
 }
 
 //get_id function
