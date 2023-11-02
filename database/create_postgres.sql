@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 16.0 (Debian 16.0-1.pgdg120+1)
--- Dumped by pg_dump version 16.0 (Debian 16.0-1.pgdg120+1)
+-- Dumped from database version 14.7 (Ubuntu 14.7-0ubuntu0.22.10.1)
+-- Dumped by pg_dump version 14.7 (Ubuntu 14.7-0ubuntu0.22.10.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -27,8 +27,9 @@ SET default_table_access_method = heap;
 CREATE TABLE public.pet (
     id integer NOT NULL,
     name character varying(120) NOT NULL,
-    breed character varying(45) NOT NULL,
-    age integer
+    breed character varying(45),
+    age integer,
+    owner integer NOT NULL
 );
 
 
@@ -47,7 +48,7 @@ CREATE SEQUENCE public.pet_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.pet_id_seq OWNER TO postgres;
+ALTER TABLE public.pet_id_seq OWNER TO postgres;
 
 --
 -- Name: pet_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -63,8 +64,10 @@ ALTER SEQUENCE public.pet_id_seq OWNED BY public.pet.id;
 CREATE TABLE public.petowner (
     id integer NOT NULL,
     name character varying(120) NOT NULL,
-    email character varying(45) NOT NULL,
-    address character varying(45) NOT NULL
+    birth_date date,
+    email character varying(80) NOT NULL,
+    phone character varying(45),
+    address character varying(120) NOT NULL
 );
 
 
@@ -83,7 +86,7 @@ CREATE SEQUENCE public.petowner_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.petowner_id_seq OWNER TO postgres;
+ALTER TABLE public.petowner_id_seq OWNER TO postgres;
 
 --
 -- Name: petowner_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -119,7 +122,7 @@ CREATE SEQUENCE public.treatment_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.treatment_id_seq OWNER TO postgres;
+ALTER TABLE public.treatment_id_seq OWNER TO postgres;
 
 --
 -- Name: treatment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -154,7 +157,7 @@ CREATE SEQUENCE public.vaccination_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.vaccination_id_seq OWNER TO postgres;
+ALTER TABLE public.vaccination_id_seq OWNER TO postgres;
 
 --
 -- Name: vaccination_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -189,7 +192,7 @@ CREATE SEQUENCE public.veterinarian_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.veterinarian_id_seq OWNER TO postgres;
+ALTER TABLE public.veterinarian_id_seq OWNER TO postgres;
 
 --
 -- Name: veterinarian_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -237,7 +240,11 @@ ALTER TABLE ONLY public.veterinarian ALTER COLUMN id SET DEFAULT nextval('public
 -- Data for Name: pet; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.pet (id, name, breed, age) FROM stdin;
+COPY public.pet (id, name, breed, age, owner) FROM stdin;
+1	Bethoven	Saint Bernard	7	-1
+2	Molly	Golden Retriever	4	-1
+3	Yoshi	Shiba Inu	2	-1
+4	Thor	Beagle	9	-1
 \.
 
 
@@ -245,7 +252,7 @@ COPY public.pet (id, name, breed, age) FROM stdin;
 -- Data for Name: petowner; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.petowner (id, name, email, address) FROM stdin;
+COPY public.petowner (id, name, birth_date, email, phone, address) FROM stdin;
 \.
 
 
@@ -270,6 +277,10 @@ COPY public.vaccination (id, description, pet) FROM stdin;
 --
 
 COPY public.veterinarian (id, name, "inscricaoCRMV") FROM stdin;
+1	CAROLINA CRISTINA DE SOUZA	SP 28509/V
+2	VITOR CUNHA GASPAR	SP 28514/V
+3	PEDRO ALVES DE MENDONCA NETO	SP 28516/V
+4	PATRICIA MIDORE NAKADAKARI	SP 28519/V
 \.
 
 
@@ -277,7 +288,7 @@ COPY public.veterinarian (id, name, "inscricaoCRMV") FROM stdin;
 -- Name: pet_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.pet_id_seq', 1, false);
+SELECT pg_catalog.setval('public.pet_id_seq', 4, true);
 
 
 --
@@ -305,7 +316,7 @@ SELECT pg_catalog.setval('public.vaccination_id_seq', 1, false);
 -- Name: veterinarian_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.veterinarian_id_seq', 1, false);
+SELECT pg_catalog.setval('public.veterinarian_id_seq', 4, true);
 
 
 --
