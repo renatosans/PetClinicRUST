@@ -3,7 +3,7 @@ version: '3.9'
 services:
   rustapp:
     container_name: rustapp
-    image: api/petclinic
+    image: vendor00001/petclinic
     build:
       context: .
       dockerfile: Dockerfile
