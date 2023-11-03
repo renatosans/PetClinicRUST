@@ -3,9 +3,7 @@ FROM rust:1.69-buster as builder
 
 WORKDIR /app
 
-# accept the build argument
-ARG DATABASE_URL
-
+# pass env vars
 ENV DATABASE_URL=$DATABASE_URL
 
 COPY . . 
