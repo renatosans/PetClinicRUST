@@ -26,7 +26,7 @@ fn main() {
     let database_url: String = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
 
     //Set database
-    let mut client = Client::connect(database_url.as_str(), NoTls).expect("Failed to connect to database");
+    let mut client: Client = Client::connect(database_url.as_str(), NoTls).expect("Failed to connect to database");
     let _batch_result = client.batch_execute(
         "CREATE TABLE IF NOT EXISTS users(
             id SERIAL PRIMARY KEY,
@@ -35,7 +35,7 @@ fn main() {
     .expect("Failed to create database table");
 
     //start server and print port
-    let listener = TcpListener::bind(format!("0.0.0.0:8080")).unwrap();
+    let listener: TcpListener = TcpListener::bind(format!("0.0.0.0:8080")).unwrap();
     println!("Server started at port 8080");
 
     //handle the client
@@ -121,7 +121,7 @@ fn handle_get_request(database_url: &str, request: &str) -> (String, String) {
 fn handle_get_all_request(database_url: &str, _request: &str) -> (String, String) {
     match Client::connect(database_url, NoTls) {
         Ok(mut client) => {
-            let mut users = Vec::new();
+            let mut users: Vec<User> = Vec::new();
 
             for row in client.query("SELECT * FROM users", &[]).unwrap() {
                 users.push(User {
