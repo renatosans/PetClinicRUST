@@ -3,14 +3,14 @@ mod models;
 
 use crate::schema::pet::dsl::*;
 use crate::models::{Pet, /*Petowner, Veterinarian*/};
-use diesel::result::Error as DieselError;
 
 use dotenv::dotenv;
+use std::io::{ Read, Write };
+use std::net::{ TcpListener, TcpStream };
 use postgres::{ Client, NoTls };
 use diesel::prelude::*;
+use diesel::result::Error as DieselError;
 use diesel::r2d2::{self, ConnectionManager};
-use std::net::{ TcpListener, TcpStream };
-use std::io::{ Read, Write };
 
 
 #[macro_use]
