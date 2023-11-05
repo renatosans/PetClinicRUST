@@ -52,7 +52,8 @@ diesel::table! {
         #[max_length = 120]
         name -> Varchar,
         #[max_length = 75]
-        inscricaoCRMV -> Varchar,
+        #[sql_name = "inscricaoCRMV"]
+        inscricao_crmv -> Varchar,
     }
 }
 
