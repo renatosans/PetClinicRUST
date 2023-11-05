@@ -141,7 +141,7 @@ fn handle_get_all_request(pool: DbPool, _request: &str) -> (String, String) {
     let result: Result<Vec<Pet>, DieselError> = pet.load::<Pet>(&mut conn);
 
     std::process::Command::new("clear").status().unwrap();
-    let pets = result.unwrap();
+    let pets: Vec<Pet> = result.unwrap();
     for pet_friend in pets.iter() {
         println!("{:?}", pet_friend);
     }
