@@ -3,6 +3,7 @@ mod models;
 
 use crate::schema::pet::dsl::*;
 use crate::models::{Pet, /*Petowner, Veterinarian*/};
+use diesel::result::Error as DieselError;
 
 use dotenv::dotenv;
 use postgres::{ Client, NoTls };
@@ -137,7 +138,7 @@ fn handle_get_request(database_url: &str, request: &str) -> (String, String) {
 fn handle_get_all_request(pool: DbPool, _request: &str) -> (String, String) {
 
     let mut conn = pool.get().unwrap(); // TODO: fix unwrap
-    let result: Result<Vec<Pet>, diesel::result::Error> = pet.load::<Pet>(&mut conn);
+    let result: Result<Vec<Pet>, DieselError> = pet.load::<Pet>(&mut conn);
 
     std::process::Command::new("clear").status().unwrap();
     let pets = result.unwrap();
