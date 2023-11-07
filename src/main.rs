@@ -70,7 +70,7 @@ async fn handle_client(database_url: &str, pool: PgPool, mut stream: TcpStream) 
 
             let (status_line, content) = match &*request {
                 r if r.starts_with("POST /users") => handle_post_request(database_url, r),
-                r if r.starts_with("GET /users/") => handle_get_request(database_url, r),
+                r if r.starts_with("GET /users/") => handle_get_request(pool, r).await,
                 r if r.starts_with("GET /users") => handle_get_all_request(pool, r).await,
                 r if r.starts_with("PUT /users/") => handle_put_request(database_url, r),
                 r if r.starts_with("DELETE /users/") => handle_delete_request(database_url, r),
@@ -105,30 +105,22 @@ fn handle_post_request(database_url: &str, request: &str) -> (String, String) {
 }
 
 //handle_get_request function
-fn handle_get_request(database_url: &str, request: &str) -> (String, String) {
-    match (get_id(&request).parse::<i32>(), Client::connect(database_url, NoTls)) {
-        (Ok(user_id), Ok(mut client)) =>
-            match client.query_one("SELECT * FROM users WHERE id = $1", &[&user_id]) {
-                Ok(row) => {
-                    let user = User {
-                        id: row.get(0),
-                        name: row.get(1),
-                        email: row.get(2),
-                    };
+async fn handle_get_request(pool: PgPool, request: &str) -> (String, String) {
 
-                    (OK_RESPONSE.to_string(), serde_json::to_string(&user).unwrap())
-                }
-                _ => (NOT_FOUND.to_string(), "User not found".to_string()),
-            }
+    let user_id = get_id(&request).parse::<i32>().unwrap();
+    let vet: Veterinarian = sqlx::query_as!(Veterinarian,"SELECT * FROM users WHERE id = $1", &[&user_id])
+    .fetch_one(&pool)
+    .await.expect("Unable to query database table");
 
-        _ => (INTERNAL_SERVER_ERROR.to_string(), "Error".to_string()),
-    }
+    println!("{:?}", vet);
+
+    (String::from("200"), String::from("ok"))
 }
 
 //handle_get_all_request function
 async fn handle_get_all_request(pool: PgPool, _request: &str) -> (String, String) {
 
-    let vets: Vec<Veterinarian> = sqlx::query_as!(Veterinarian,"select * from veterinarian")
+    let vets: Vec<Veterinarian> = sqlx::query_as!(Veterinarian,"SELECT * FROM veterinarian")
     .fetch_all(&pool)
     .await.expect("Unable to query database table");
 
