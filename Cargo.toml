@@ -11,4 +11,5 @@ serde = { version = "1.0.192", features = ["derive"] }
 sqlx = { version = "0.7.2", features = [  "runtime-async-std-native-tls", "postgres", "chrono" ] }
 tokio = { version = "1.33.0", features = ["full"] }
 actix-web = "4.4.0"
+actix-cors = "0.6.4"
 chrono = "0.4.31"
