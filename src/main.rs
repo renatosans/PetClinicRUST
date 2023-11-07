@@ -73,7 +73,7 @@ async fn handle_client(database_url: &str, pool: PgPool, mut stream: TcpStream) 
                 r if r.starts_with("GET /users/") => handle_get_request(pool, r).await,
                 r if r.starts_with("GET /users") => handle_get_all_request(pool, r).await,
                 r if r.starts_with("PUT /users/") => handle_put_request(database_url, r),
-                r if r.starts_with("DELETE /users/") => handle_delete_request(database_url, r),
+                r if r.starts_with("DELETE /users/") => handle_delete_request(pool, r).await,
                 _ => (NOT_FOUND.to_string(), "404 Not Found".to_string()),
             };
 
@@ -155,19 +155,17 @@ fn handle_put_request(database_url: &str, request: &str) -> (String, String) {
 }
 
 //handle_delete_request function
-fn handle_delete_request(database_url: &str, request: &str) -> (String, String) {
-    match (get_id(&request).parse::<i32>(), Client::connect(database_url, NoTls)) {
-        (Ok(user_id), Ok(mut client)) => {
-            let rows_affected = client.execute("DELETE FROM users WHERE id = $1", &[&user_id]).unwrap();
+async fn handle_delete_request(pool: PgPool, request: &str) -> (String, String) {
 
-            if rows_affected == 0 {
-                return (NOT_FOUND.to_string(), "User not found".to_string());
-            }
+    let vet_id = get_id(&request).parse::<i32>().unwrap();
+    let query_result = sqlx::query!("DELETE FROM veterinarian WHERE id = $1", vet_id)
+    .execute(&pool)
+    .await.expect("Unable to query database table");
 
-            (OK_RESPONSE.to_string(), "User deleted".to_string())
-        }
-        _ => (INTERNAL_SERVER_ERROR.to_string(), "Error".to_string()),
+    if query_result.rows_affected() == 0 {
     }
+
+    (String::from("200"), String::from("ok"))
 }
 
 //get_id function
