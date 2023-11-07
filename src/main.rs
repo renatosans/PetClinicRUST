@@ -19,7 +19,7 @@ struct User {
     email: String,
 }
 
-//constants
+// constants
 const OK_RESPONSE: &str = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n";
 const NOT_FOUND: &str = "HTTP/1.1 404 NOT FOUND\r\n\r\n";
 const INTERNAL_SERVER_ERROR: &str = "HTTP/1.1 500 INTERNAL SERVER ERROR\r\n\r\n";
@@ -33,13 +33,13 @@ fn main() {
     let pool_options = PgPoolOptions::new().max_connections(100);
     let pool = rt.block_on(pool_options.connect(&database_url)).expect("Unable to connect to database");
 
-    //Set database
-    let mut client: Client = Client::connect(database_url.clone().as_str(), NoTls).expect("Failed to connect to database");
-    let _batch_result = client.batch_execute(
+    // set database
+    let _query_result = sqlx::query!(
         "CREATE TABLE IF NOT EXISTS users(
             id SERIAL PRIMARY KEY,
             name VARCHAR NOT NULL,
             email VARCHAR NOT NULL)")
+    .execute(&pool)
     .expect("Failed to create database table");
 
     //start server and print port
