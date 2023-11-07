@@ -7,18 +7,9 @@ use dotenv::dotenv;
 use std::io::{ Read, Write };
 use std::net::{ TcpListener, TcpStream };
 use actix_web::web;
-use serde::{Serialize, Deserialize};
 // use diesel::prelude::*;                       // diesel ORM
 use sqlx::postgres::{PgPool, PgPoolOptions};     // sqlx
 
-
-// model: User struct
-#[derive(Serialize, Deserialize)]
-struct User {
-    id: Option<i32>,
-    name: String,
-    email: String,
-}
 
 // constants
 const OK_RESPONSE: &str = "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n";
@@ -143,13 +134,16 @@ async fn handle_delete_request(pool: PgPool, request: &str) -> (String, String) 
     let vet_id = get_id(&request).parse::<i32>().unwrap();
     let query_result = sqlx::query!("DELETE FROM veterinarian WHERE id = $1", vet_id)
     .execute(&pool)
-    .await.expect("Unable to query database table");
+    .await.map_err(|_e| {
+        return (INTERNAL_SERVER_ERROR.to_string(), "Falha ao exluir registro");
+    });
 
-    if query_result.rows_affected() == 0 {
+    let rows_affected = query_result.unwrap().rows_affected();
+    if rows_affected == 0 {
         return (NOT_FOUND.to_string(), "Registro não encontrado".to_string());
     }
 
-    (OK_RESPONSE.to_string(), query_result.rows_affected().to_string())
+    (OK_RESPONSE.to_string(), format!("{} Registro(s) afetados", rows_affected))
 }
 
 //get_id function

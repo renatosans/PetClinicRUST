@@ -44,7 +44,7 @@ pub struct Vaccination {
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 pub struct Veterinarian {
-    pub id: i32,
+    pub id: i32,     // id: Option<i32>, veterinarian_payload
     pub name: String,
     pub inscricao_crmv: String,
 }
