@@ -25,12 +25,12 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(|| async { "Actix REST API" }))
             .service(
                 web::scope("/api")
-                    .service(cars_for_sale::index)
-                    .service(cars_for_sale::select)
-                    .service(cars_for_sale::create)
-                    .service(cars_for_sale::update)
-                    .service(cars_for_sale::delete)
-                    .service(salesperson::delete)
+                    .service(pet::index)
+                    .service(pet::select)
+                    .service(pet::delete)
+                    .service(veterinarian::index)
+                    .service(veterinarian::select)
+                    .service(veterinarian::delete)
             )
     })
     .bind(("127.0.0.1", 8080))?
