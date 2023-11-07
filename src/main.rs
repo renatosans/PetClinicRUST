@@ -1,7 +1,7 @@
 mod schema;
 mod models;
 
-use crate::models::{Pet, Petowner, Veterinarian};
+use crate::models::{/*Pet, Petowner,*/ Veterinarian};
 
 use dotenv::dotenv;
 use std::io::{ Read, Write };
@@ -35,13 +35,12 @@ fn main() {
     let pool = rt.block_on(pool_options.connect(&database_url)).expect("Unable to connect to database");
 
     // set database
-    let _query_result = sqlx::query!(
+    let _query_result = rt.block_on(sqlx::query!(
         "CREATE TABLE IF NOT EXISTS users(
             id SERIAL PRIMARY KEY,
             name VARCHAR NOT NULL,
             email VARCHAR NOT NULL)")
-    .execute(&pool)
-    .expect("Failed to create database table");
+    .execute(&pool));
 
     //start server and print port
     let listener: TcpListener = TcpListener::bind(format!("0.0.0.0:8080")).unwrap();
@@ -70,7 +69,7 @@ async fn handle_client(database_url: &str, pool: PgPool, mut stream: TcpStream) 
             request.push_str(String::from_utf8_lossy(&buffer[..size]).as_ref());
 
             let (status_line, content) = match &*request {
-                r if r.starts_with("POST /users") => handle_post_request(database_url, r),
+                r if r.starts_with("POST /users") => handle_post_request(pool, r).await,
                 r if r.starts_with("GET /users/") => handle_get_request(pool, r).await,
                 r if r.starts_with("GET /users") => handle_get_all_request(pool, r).await,
                 r if r.starts_with("PUT /users/") => handle_put_request(pool, r).await,
@@ -89,20 +88,15 @@ async fn handle_client(database_url: &str, pool: PgPool, mut stream: TcpStream) 
 //CONTROLLERS
 
 //handle_post_request function
-fn handle_post_request(database_url: &str, request: &str) -> (String, String) {
-    match (get_user_request_body(&request), Client::connect(database_url, NoTls)) {
-        (Ok(user), Ok(mut client)) => {
-            client
-                .execute(
-                    "INSERT INTO users (name, email) VALUES ($1, $2)",
-                    &[&user.name, &user.email]
-                )
-                .unwrap();
-
-            (OK_RESPONSE.to_string(), "User created".to_string())
-        }
-        _ => (INTERNAL_SERVER_ERROR.to_string(), "Error".to_string()),
-    }
+async fn handle_post_request(pool: PgPool, request: &str) -> (String, String) {
+/*
+    let payload: web::Json<Veterinarian> = web::Json(request);
+    .execute(
+        "INSERT INTO users (name, email) VALUES ($1, $2)",
+        &[&user.name, &user.email]
+    )
+*/
+    (String::from("200"), String::from("ok"))
 }
 
 //handle_get_request function
