@@ -45,5 +45,6 @@ pub struct Vaccination {
 pub struct Veterinarian {
     pub id: i32,
     pub name: String,
-    pub inscricaoCRMV: String,
+    #[sqlx(rename = "inscricaoCRMV")]
+    pub inscricao_crmv: String,
 }

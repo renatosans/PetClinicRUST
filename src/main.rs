@@ -11,7 +11,7 @@ use serde::{Serialize, Deserialize};
 use sqlx::postgres::{PgPool, PgPoolOptions};     // sqlx
 
 
-//Model: USer struct with id, name, email
+// model: User struct
 #[derive(Serialize, Deserialize)]
 struct User {
     id: Option<i32>,
@@ -25,7 +25,6 @@ const NOT_FOUND: &str = "HTTP/1.1 404 NOT FOUND\r\n\r\n";
 const INTERNAL_SERVER_ERROR: &str = "HTTP/1.1 500 INTERNAL SERVER ERROR\r\n\r\n";
 
 
-//main function
 fn main() {
     dotenv().expect("Unable to load environment variables from .env file");
     let database_url: String = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
