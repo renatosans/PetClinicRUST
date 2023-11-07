@@ -107,8 +107,8 @@ fn handle_post_request(database_url: &str, request: &str) -> (String, String) {
 //handle_get_request function
 async fn handle_get_request(pool: PgPool, request: &str) -> (String, String) {
 
-    let user_id = get_id(&request).parse::<i32>().unwrap();
-    let vet: Veterinarian = sqlx::query_as!(Veterinarian,"SELECT * FROM users WHERE id = $1", &[&user_id])
+    let vet_id = get_id(&request).parse::<i32>().unwrap();
+    let vet: Veterinarian = sqlx::query_as!(Veterinarian,"SELECT * FROM veterinarian WHERE id = $1", vet_id)
     .fetch_one(&pool)
     .await.expect("Unable to query database table");
 
