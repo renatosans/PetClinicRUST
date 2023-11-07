@@ -6,7 +6,6 @@ use crate::models::{Pet, Petowner, Veterinarian};
 use dotenv::dotenv;
 use std::io::{ Read, Write };
 use std::net::{ TcpListener, TcpStream };
-use postgres::{ Client, NoTls };
 // use diesel::prelude::*;                       // diesel ORM
 use sqlx::postgres::{PgPool, PgPoolOptions};     // sqlx
 
