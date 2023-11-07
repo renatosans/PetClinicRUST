@@ -6,7 +6,7 @@ use crate::models::{/*Pet, Petowner,*/ Veterinarian};
 use dotenv::dotenv;
 use std::io::{ Read, Write };
 use std::net::{ TcpListener, TcpStream };
-use actix_web::{web};
+use actix_web::web;
 use serde::{Serialize, Deserialize};
 // use diesel::prelude::*;                       // diesel ORM
 use sqlx::postgres::{PgPool, PgPoolOptions};     // sqlx
@@ -85,12 +85,10 @@ async fn handle_client(pool: PgPool, mut stream: TcpStream) {
     }
 }
 
-//CONTROLLERS
-
-//handle_post_request function
+// handle_post_request function
 async fn handle_post_request(pool: PgPool, request: &str) -> (String, String) {
+    let payload: web::Json<Veterinarian> = web::Json(Veterinarian::default());
 /*
-    let payload: web::Json<Veterinarian> = web::Json(request);
     .execute(
         "INSERT INTO users (name, email) VALUES ($1, $2)",
         &[&user.name, &user.email]
@@ -99,7 +97,7 @@ async fn handle_post_request(pool: PgPool, request: &str) -> (String, String) {
     (String::from("200"), String::from("ok"))
 }
 
-//handle_get_request function
+// handle_get_request function
 async fn handle_get_request(pool: PgPool, request: &str) -> (String, String) {
 
     let vet_id = get_id(&request).parse::<i32>().unwrap();
