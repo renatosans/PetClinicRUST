@@ -27,7 +27,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(cors)
             .wrap(middleware::NormalizePath::trim())
             .wrap(middleware::Logger::default())
-            .app_data(web::Data::new(pool.clone()))
+            .app_data(web::Data::new(&pool))
             .route("/", web::get().to(|| async { "Actix REST API" }))
             .service(
                 web::scope("/api")
