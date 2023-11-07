@@ -1,4 +1,10 @@
+mod schema;
+mod models;
+mod handlers;
+
 use dotenv::dotenv;
+use handlers::pet;
+use handlers::pet_owner;
 use actix_cors::Cors;
 use actix_web::{web, middleware, App, HttpServer};
 // use diesel::prelude::*;                       // diesel ORM
@@ -28,9 +34,9 @@ async fn main() -> std::io::Result<()> {
                     .service(pet::index)
                     .service(pet::select)
                     .service(pet::delete)
-                    .service(veterinarian::index)
-                    .service(veterinarian::select)
-                    .service(veterinarian::delete)
+                    .service(pet_owner::index)
+                    .service(pet_owner::select)
+                    .service(pet_owner::delete)
             )
     })
     .bind(("127.0.0.1", 8080))?
