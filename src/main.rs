@@ -50,7 +50,7 @@ fn main() {
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
-                rt.block_on(handle_client(&database_url, pool.clone(), stream));
+                rt.block_on(handle_client(pool.clone(), stream));
             }
             Err(e) => {
                 println!("Error: {}", e);
@@ -60,7 +60,7 @@ fn main() {
 }
 
 //handle_client function
-async fn handle_client(database_url: &str, pool: PgPool, mut stream: TcpStream) {
+async fn handle_client(pool: PgPool, mut stream: TcpStream) {
     let mut buffer = [0; 1024];
     let mut request = String::new();
 
