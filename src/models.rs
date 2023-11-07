@@ -4,7 +4,6 @@
 #![allow(clippy::all)]
 
 
-use sqlx::FromRow;
 use chrono::NaiveDate;
 // use diesel::prelude::*;
 
@@ -42,10 +41,9 @@ pub struct Vaccination {
     pub pet: i32,
 }
 
-#[derive(Debug, FromRow)]
+#[derive(Debug)]
 pub struct Veterinarian {
     pub id: i32,
     pub name: String,
-    #[sqlx(rename = "inscricaoCRMV")]
     pub inscricao_crmv: String,
 }

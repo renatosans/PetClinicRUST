@@ -108,7 +108,7 @@ fn handle_post_request(database_url: &str, request: &str) -> (String, String) {
 async fn handle_get_request(pool: PgPool, request: &str) -> (String, String) {
 
     let vet_id = get_id(&request).parse::<i32>().unwrap();
-    let vet: Veterinarian = sqlx::query_as!(Veterinarian,"SELECT * FROM veterinarian WHERE id = $1", vet_id)
+    let vet: Veterinarian = sqlx::query_as!(Veterinarian,"SELECT id, name, \"inscricaoCRMV\" as inscricao_crmv FROM veterinarian WHERE id = $1", vet_id)
     .fetch_one(&pool)
     .await.expect("Unable to query database table");
 
@@ -120,7 +120,7 @@ async fn handle_get_request(pool: PgPool, request: &str) -> (String, String) {
 //handle_get_all_request function
 async fn handle_get_all_request(pool: PgPool, _request: &str) -> (String, String) {
 
-    let vets: Vec<Veterinarian> = sqlx::query_as!(Veterinarian,"SELECT * FROM veterinarian")
+    let vets: Vec<Veterinarian> = sqlx::query_as!(Veterinarian,"SELECT id, name, \"inscricaoCRMV\" as inscricao_crmv FROM veterinarian")
     .fetch_all(&pool)
     .await.expect("Unable to query database table");
 
