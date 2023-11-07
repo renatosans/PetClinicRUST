@@ -146,9 +146,10 @@ async fn handle_delete_request(pool: PgPool, request: &str) -> (String, String) 
     .await.expect("Unable to query database table");
 
     if query_result.rows_affected() == 0 {
+        return (NOT_FOUND.to_string(), "Registro não encontrado".to_string());
     }
 
-    (String::from("200"), String::from("ok"))
+    (OK_RESPONSE.to_string(), query_result.rows_affected().to_string())
 }
 
 //get_id function
