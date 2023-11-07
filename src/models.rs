@@ -5,9 +5,9 @@
 
 
 use chrono::NaiveDate;
-use diesel::prelude::*;
+// use diesel::prelude::*;
 
-#[derive(Queryable, Debug)]
+#[derive(Debug)]
 pub struct Pet {
     pub id: i32,
     pub name: String,
@@ -16,7 +16,7 @@ pub struct Pet {
     pub owner: i32,
 }
 
-#[derive(Queryable, Debug)]
+#[derive(Debug)]
 pub struct Petowner {
     pub id: i32,
     pub name: String,
@@ -26,7 +26,7 @@ pub struct Petowner {
     pub address: String,
 }
 
-#[derive(Queryable, Debug)]
+#[derive(Debug)]
 pub struct Treatment {
     pub id: i32,
     pub description: String,
@@ -34,17 +34,16 @@ pub struct Treatment {
     pub veterinarian: i32,
 }
 
-#[derive(Queryable, Debug)]
+#[derive(Debug)]
 pub struct Vaccination {
     pub id: i32,
     pub description: String,
     pub pet: i32,
 }
 
-#[derive(Queryable, Debug)]
+#[derive(Debug)]
 pub struct Veterinarian {
     pub id: i32,
     pub name: String,
-    pub inscricao_crmv: String,
+    pub inscricaoCRMV: String,
 }
-

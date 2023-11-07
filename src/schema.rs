@@ -1,5 +1,6 @@
 // @generated automatically by Diesel CLI.
 
+/*
 diesel::table! {
     pet (id) {
         id -> Int4,
@@ -68,3 +69,4 @@ diesel::allow_tables_to_appear_in_same_query!(
     vaccination,
     veterinarian,
 );
+*/

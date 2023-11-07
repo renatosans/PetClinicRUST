@@ -1,16 +1,14 @@
 mod schema;
 mod models;
 
-use crate::schema::pet::dsl::*;
-use crate::models::{Pet, /*Petowner, Veterinarian*/};
+use crate::models::{Pet, Petowner, Veterinarian};
 
 use dotenv::dotenv;
 use std::io::{ Read, Write };
 use std::net::{ TcpListener, TcpStream };
 use postgres::{ Client, NoTls };
-use diesel::prelude::*;
-use diesel::result::Error as DieselError;
-use diesel::r2d2::{self, ConnectionManager};
+// use diesel::prelude::*;                       // diesel ORM
+use sqlx::postgres::{PgPool, PgPoolOptions};     // sqlx
 
 
 #[macro_use]
@@ -30,17 +28,14 @@ const NOT_FOUND: &str = "HTTP/1.1 404 NOT FOUND\r\n\r\n";
 const INTERNAL_SERVER_ERROR: &str = "HTTP/1.1 500 INTERNAL SERVER ERROR\r\n\r\n";
 
 
-pub type DbPool = r2d2::Pool<ConnectionManager<PgConnection>>;
-
 //main function
 fn main() {
     dotenv().expect("Unable to load environment variables from .env file");
     let database_url: String = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
 
-    let manager = ConnectionManager::<PgConnection>::new(database_url.clone());
-    let pool: DbPool = r2d2::Pool::builder()
-        .build(manager)
-        .expect("Failed to create pool.");
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    let pool_options = PgPoolOptions::new().max_connections(100);
+    let pool = rt.block_on(pool_options.connect(&database_url)).expect("Unable to connect to database");
 
     //Set database
     let mut client: Client = Client::connect(database_url.clone().as_str(), NoTls).expect("Failed to connect to database");
@@ -59,7 +54,7 @@ fn main() {
     for stream in listener.incoming() {
         match stream {
             Ok(stream) => {
-                handle_client(&database_url, pool.clone(), stream);
+                rt.block_on(handle_client(&database_url, pool.clone(), stream));
             }
             Err(e) => {
                 println!("Error: {}", e);
@@ -69,7 +64,7 @@ fn main() {
 }
 
 //handle_client function
-fn handle_client(database_url: &str, pool: DbPool, mut stream: TcpStream) {
+async fn handle_client(database_url: &str, pool: PgPool, mut stream: TcpStream) {
     let mut buffer = [0; 1024];
     let mut request = String::new();
 
@@ -80,7 +75,7 @@ fn handle_client(database_url: &str, pool: DbPool, mut stream: TcpStream) {
             let (status_line, content) = match &*request {
                 r if r.starts_with("POST /users") => handle_post_request(database_url, r),
                 r if r.starts_with("GET /users/") => handle_get_request(database_url, r),
-                r if r.starts_with("GET /users") => handle_get_all_request(pool, r),
+                r if r.starts_with("GET /users") => handle_get_all_request(pool, r).await,
                 r if r.starts_with("PUT /users/") => handle_put_request(database_url, r),
                 r if r.starts_with("DELETE /users/") => handle_delete_request(database_url, r),
                 _ => (NOT_FOUND.to_string(), "404 Not Found".to_string()),
@@ -135,15 +130,14 @@ fn handle_get_request(database_url: &str, request: &str) -> (String, String) {
 }
 
 //handle_get_all_request function
-fn handle_get_all_request(pool: DbPool, _request: &str) -> (String, String) {
+async fn handle_get_all_request(pool: PgPool, _request: &str) -> (String, String) {
 
-    let mut conn = pool.get().unwrap(); // TODO: fix unwrap
-    let result: Result<Vec<Pet>, DieselError> = pet.load::<Pet>(&mut conn);
+    let vets: Vec<Veterinarian> = sqlx::query_as!(Veterinarian,"select * from veterinarian")
+    .fetch_all(&pool)
+    .await.expect("Unable to query database table");
 
-    std::process::Command::new("clear").status().unwrap();
-    let pets: Vec<Pet> = result.unwrap();
-    for pet_friend in pets.iter() {
-        println!("{:?}", pet_friend);
+    for veterinarian in vets.iter() {
+        println!("{:?}", veterinarian);
     }
 
     (String::from("200"), String::from("ok"))
