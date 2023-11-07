@@ -6,12 +6,10 @@ use crate::models::{Pet, Petowner, Veterinarian};
 use dotenv::dotenv;
 use std::io::{ Read, Write };
 use std::net::{ TcpListener, TcpStream };
+use serde::{Serialize, Deserialize};
 // use diesel::prelude::*;                       // diesel ORM
 use sqlx::postgres::{PgPool, PgPoolOptions};     // sqlx
 
-
-#[macro_use]
-extern crate serde_derive;
 
 //Model: USer struct with id, name, email
 #[derive(Serialize, Deserialize)]
