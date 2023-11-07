@@ -5,9 +5,10 @@
 
 
 use chrono::NaiveDate;
+use serde::{Serialize, Deserialize};
 // use diesel::prelude::*;
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Pet {
     pub id: i32,
     pub name: String,
@@ -26,7 +27,7 @@ pub struct Petowner {
     pub address: String,
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Treatment {
     pub id: i32,
     pub description: String,
@@ -34,14 +35,14 @@ pub struct Treatment {
     pub veterinarian: i32,
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Vaccination {
     pub id: i32,
     pub description: String,
     pub pet: i32,
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Veterinarian {
     pub id: i32,
     pub name: String,

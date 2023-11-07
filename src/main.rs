@@ -6,6 +6,7 @@ use crate::models::{Pet, Petowner, Veterinarian};
 use dotenv::dotenv;
 use std::io::{ Read, Write };
 use std::net::{ TcpListener, TcpStream };
+use actix_web::{web};
 use serde::{Serialize, Deserialize};
 // use diesel::prelude::*;                       // diesel ORM
 use sqlx::postgres::{PgPool, PgPoolOptions};     // sqlx
@@ -72,7 +73,7 @@ async fn handle_client(database_url: &str, pool: PgPool, mut stream: TcpStream) 
                 r if r.starts_with("POST /users") => handle_post_request(database_url, r),
                 r if r.starts_with("GET /users/") => handle_get_request(pool, r).await,
                 r if r.starts_with("GET /users") => handle_get_all_request(pool, r).await,
-                r if r.starts_with("PUT /users/") => handle_put_request(database_url, r),
+                r if r.starts_with("PUT /users/") => handle_put_request(pool, r).await,
                 r if r.starts_with("DELETE /users/") => handle_delete_request(pool, r).await,
                 _ => (NOT_FOUND.to_string(), "404 Not Found".to_string()),
             };
@@ -132,26 +133,16 @@ async fn handle_get_all_request(pool: PgPool, _request: &str) -> (String, String
 }
 
 //handle_put_request function
-fn handle_put_request(database_url: &str, request: &str) -> (String, String) {
-    match
-        (
-            get_id(&request).parse::<i32>(),
-            get_user_request_body(&request),
-            Client::connect(database_url, NoTls),
-        )
-    {
-        (Ok(user_id), Ok(user), Ok(mut client)) => {
-            client
-                .execute(
-                    "UPDATE users SET name = $1, email = $2 WHERE id = $3",
-                    &[&user.name, &user.email, &user_id]
-                )
-                .unwrap();
-
-            (OK_RESPONSE.to_string(), "User updated".to_string())
-        }
-        _ => (INTERNAL_SERVER_ERROR.to_string(), "Error".to_string()),
-    }
+async fn handle_put_request(pool: PgPool, request: &str) -> (String, String) {
+/*
+    let vet_id = get_id(&request).parse::<i32>().unwrap();
+    let payload: web::Json<Veterinarian> = web::Json(request);
+    .execute(
+        "UPDATE users SET name = $1, email = $2 WHERE id = $3",
+        &[&user.name, &user.email, &user_id]
+    )
+*/
+    (String::from("200"), String::from("ok"))
 }
 
 //handle_delete_request function
@@ -171,9 +162,4 @@ async fn handle_delete_request(pool: PgPool, request: &str) -> (String, String) 
 //get_id function
 fn get_id(request: &str) -> &str {
     request.split("/").nth(2).unwrap_or_default().split_whitespace().next().unwrap_or_default()
-}
-
-//deserialize user from request body with the id
-fn get_user_request_body(request: &str) -> Result<User, serde_json::Error> {
-    serde_json::from_str(request.split("\r\n\r\n").last().unwrap_or_default())
 }
