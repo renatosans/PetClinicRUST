@@ -5,10 +5,10 @@ use actix_web::{get, post, patch, delete, web, HttpResponse, Error};
 
 
 #[get("/owners/{owner_id}")]
-async fn select(pool: web::Data<DbPool>, car_id: web::Path<i32>) -> Result<HttpResponse, Error> {
+async fn select(pool: web::Data<PgPool>, car_id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let car = web::block(move || {
         let mut conn = pool.get().unwrap(); // TODO: fix unwrap
-        let result: Result<Option<CarsForSale>, diesel::result::Error> = cars_for_sale.find(car_id.into_inner()).first(&mut conn).optional();
+        let result: Result<Option<Petowner>, Error> = cars_for_sale.find(car_id.into_inner()).first(&mut conn).optional();
         return result;
     })
     .await?
@@ -18,10 +18,10 @@ async fn select(pool: web::Data<DbPool>, car_id: web::Path<i32>) -> Result<HttpR
 }
 
 #[patch("/owners/{owner_id}")]
-async fn update(pool: web::Data<DbPool>, car_id: web::Path<i32>, payload: web::Json<CarsForSale>) -> Result<HttpResponse, Error> {
+async fn update(pool: web::Data<PgPool>, car_id: web::Path<i32>, payload: web::Json<Petowner>) -> Result<HttpResponse, Error> {
     let car = web::block(move || {
         let mut conn = pool.get().unwrap(); // TODO: fix unwrap
-        let result: Result<usize, diesel::result::Error> = diesel::update(cars_for_sale.find(car_id.into_inner())).set(payload.into_inner()).execute(&mut conn);
+        let result: Result<usize, Error> = diesel::update(cars_for_sale.find(car_id.into_inner())).set(payload.into_inner()).execute(&mut conn);
         return result;
     })
     .await?
@@ -31,10 +31,10 @@ async fn update(pool: web::Data<DbPool>, car_id: web::Path<i32>, payload: web::J
 }
 
 #[delete("/owners/{owner_id}")]
-async fn delete(pool: web::Data<DbPool>, car_id: web::Path<i32>) -> Result<HttpResponse, Error> {
+async fn delete(pool: web::Data<PgPool>, car_id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let car = web::block(move || {
         let mut conn = pool.get().unwrap(); // TODO: fix unwrap
-        let result: Result<usize, diesel::result::Error> = diesel::delete(cars_for_sale.find(car_id.into_inner())).execute(&mut conn);
+        let result: Result<usize, Error> = diesel::delete(cars_for_sale.find(car_id.into_inner())).execute(&mut conn);
         return result;
     })
     .await?

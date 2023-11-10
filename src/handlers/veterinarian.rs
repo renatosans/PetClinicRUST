@@ -1,8 +1,3 @@
-mod schema;
-mod models;
-
-use crate::models::{/*Pet, Petowner,*/ Veterinarian};
-
 use dotenv::dotenv;
 use std::io::{ Read, Write };
 use std::net::{ TcpListener, TcpStream };
