@@ -5,6 +5,7 @@ mod handlers;
 use dotenv::dotenv;
 use handlers::pet;
 use handlers::pet_owner;
+use tokio::runtime::Runtime;
 use actix_cors::Cors;
 use actix_web::{web, middleware, App, HttpServer};
 // use diesel::prelude::*;                       // diesel ORM
@@ -16,9 +17,9 @@ async fn main() -> std::io::Result<()> {
     dotenv().expect("Unable to load environment variables from .env file");
     let database_url: String = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
 
-    let rt = tokio::runtime::Runtime::new().unwrap();
+    let tokio_rt: Runtime = Runtime::new().unwrap();
     let pool_options = PgPoolOptions::new().max_connections(100);
-    let pool: PgPool = rt.block_on(pool_options.connect(&database_url)).expect("Unable to connect to database");
+    let pool: PgPool = tokio_rt.block_on(pool_options.connect(&database_url)).expect("Unable to connect to database");
 
     HttpServer::new(move || {
         let cors = Cors::default().allow_any_origin().allow_any_method().allow_any_header();
