@@ -17,7 +17,7 @@ pub struct Pet {
     pub owner: i32,
 }
 
-#[derive(Debug)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Petowner {
     pub id: i32,
     pub name: String,

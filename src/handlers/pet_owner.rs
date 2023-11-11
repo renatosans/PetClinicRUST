@@ -6,15 +6,18 @@ use actix_web::{get, post, patch, delete, web, HttpResponse, Error};
 
 #[get("/owners/{owner_id}")]
 async fn select(pool: web::Data<PgPool>, owner_id: web::Path<i32>) -> Result<HttpResponse, Error> {
-    let car = web::block(move || {
-        let mut conn = pool.get().unwrap(); // TODO: fix unwrap
-        let result: Result<Option<Petowner>, Error> = cars_for_sale.find(car_id.into_inner()).first(&mut conn).optional();
+    let owner = web::block(move || {
+        let connPool = pool.get_ref();
+
+        let result = sqlx::query_as!(Petowner,"SELECT * FROM petowner WHERE id = $1", owner_id.into_inner())
+        .fetch_one(connPool);
+
         return result;
     })
-    .await?
+    .await
     .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    Ok(HttpResponse::Ok().json(car))
+    Ok(HttpResponse::Ok().json(owner.await.unwrap()))
 }
 
 #[patch("/owners/{owner_id}")]
