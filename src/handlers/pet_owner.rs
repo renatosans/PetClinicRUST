@@ -32,9 +32,8 @@ async fn update(pool: web::Data<PgPool>, owner_id: web::Path<i32>, payload: web:
 
 #[delete("/owners/{owner_id}")]
 async fn delete(pool: web::Data<PgPool>, owner_id: web::Path<i32>) -> Result<HttpResponse, Error> {
-    let connPool = pool.get_ref();
-
     let query_result = web::block(move || {
+        let connPool = pool.get_ref();
 
         let result = sqlx::query!("DELETE FROM petowner WHERE id = $1", owner_id.into_inner())
         .execute(connPool);
