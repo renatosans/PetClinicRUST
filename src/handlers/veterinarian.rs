@@ -116,6 +116,8 @@ async fn handle_get_all_request(pool: PgPool, _request: &str) -> (String, String
 
 //handle_put_request function
 async fn handle_put_request(pool: PgPool, request: &str) -> (String, String) {
+    let vet_id = get_id(&request).parse::<i32>().unwrap();
+
 /*
     let vet_id = get_id(&request).parse::<i32>().unwrap();
     let payload: web::Json<Veterinarian> = web::Json(request);
