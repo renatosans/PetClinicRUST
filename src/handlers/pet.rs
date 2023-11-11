@@ -14,6 +14,24 @@ async fn index(pool: web::Data<PgPool>) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().json(pets))
 }
 
+#[post("/pets")]
+async fn create(pool: web::Data<PgPool>, payload: web::Json<Pet>) -> Result<HttpResponse, Error> {
+    let pet_payload: Pet = payload.into_inner();
+
+    let inserted_pet = sqlx::query_as!(Pet, "INSERT INTO pet(name, breed, age, owner)
+    VALUES ($1, $2, $3, $4)
+    RETURNING id, name, breed, age, owner",
+    pet_payload.name,
+    pet_payload.breed,
+    pet_payload.age,
+    pet_payload.owner)
+    .fetch_one(&**pool)
+    .await
+    .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    Ok(HttpResponse::Ok().json(inserted_pet))
+}
+
 #[get("/pets/{pet_id}")]
 async fn select(pool: web::Data<PgPool>, pet_id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let result = sqlx::query_as!(Pet, "SELECT * FROM pet WHERE id = $1", pet_id.into_inner())
