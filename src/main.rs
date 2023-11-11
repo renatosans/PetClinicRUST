@@ -5,7 +5,6 @@ mod handlers;
 use dotenv::dotenv;
 use handlers::pet;
 use handlers::pet_owner;
-use tokio::runtime::Runtime;
 use actix_cors::Cors;
 use actix_web::{web, middleware, App, HttpServer};
 // use diesel::prelude::*;                       // diesel ORM
