@@ -22,14 +22,22 @@ async fn select(pool: web::Data<PgPool>, pet_id: web::Path<i32>) -> Result<HttpR
 
 #[patch("/pets/{pet_id}")]
 async fn update(pool: web::Data<PgPool>, pet_id: web::Path<i32>, payload: web::Json<Pet>) -> Result<HttpResponse, Error> {
-    let car = web::block(move || {
-        let result: Result<usize, Error> = diesel::update(pet.find(pet_id.into_inner())).set(payload.into_inner()).execute(&mut conn);
-        return result;
-    })
-    .await?
+    let pet_payload: Pet = payload.into_inner();
+
+    let updated_pet = sqlx::query_as!(Pet, "UPDATE pet
+    SET (name, breed, age, owner) = ($2, $3, $4, $5)
+    WHERE id = $1
+    RETURNING id, name, breed, age, owner",
+    pet_id.into_inner(),
+    pet_payload.name,
+    pet_payload.breed,
+    pet_payload.age,
+    pet_payload.owner)
+    .fetch_one(&**pool)
+    .await
     .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    Ok(HttpResponse::Ok().json(car))
+    Ok(HttpResponse::Ok().json(updated_pet))
 }
 
 #[delete("/pets/{pet_id}")]
