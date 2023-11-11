@@ -10,7 +10,7 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Pet {
-    pub id: i32,
+    pub id: Option<i32>,
     pub name: String,
     pub breed: Option<String>,
     pub age: Option<i32>,
@@ -19,7 +19,7 @@ pub struct Pet {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Petowner {
-    pub id: i32,
+    pub id: Option<i32>,
     pub name: String,
     pub birth_date: Option<NaiveDate>,
     pub email: String,
@@ -29,7 +29,7 @@ pub struct Petowner {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Treatment {
-    pub id: i32,
+    pub id: i32,     // id: Option<i32>, treatment_payload
     pub description: String,
     pub pet: i32,
     pub veterinarian: i32,
@@ -37,7 +37,7 @@ pub struct Treatment {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Vaccination {
-    pub id: i32,
+    pub id: i32,     // id: Option<i32>, vaccination_payload
     pub description: String,
     pub pet: i32,
 }
