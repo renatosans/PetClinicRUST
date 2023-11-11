@@ -38,7 +38,7 @@ async fn main() -> std::io::Result<()> {
                     .service(pet::update)
                     .service(pet::delete)
                     .service(pet_owner::index)
-                    //.service(pet_owner::create)
+                    .service(pet_owner::create)
                     .service(pet_owner::select)
                     .service(pet_owner::update)
                     .service(pet_owner::delete)
