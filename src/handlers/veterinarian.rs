@@ -1,3 +1,4 @@
+use crate::models::*;
 use dotenv::dotenv;
 use std::io::{ Read, Write };
 use std::net::{ TcpListener, TcpStream };
@@ -73,13 +74,16 @@ async fn handle_client(pool: PgPool, mut stream: TcpStream) {
 
 // handle_post_request function
 async fn handle_post_request(pool: PgPool, request: &str) -> (String, String) {
-    let payload: web::Json<Veterinarian> = web::Json(Veterinarian::default());
-/*
-    .execute(
-        "INSERT INTO users (name, email) VALUES ($1, $2)",
-        &[&user.name, &user.email]
-    )
-*/
+    /*
+    let payload: Veterinarian = web::Json();
+
+    let vet: Veterinarian = sqlx::query_as!(Veterinarian,"INSERT INTO veterinarian(\"name\", \"inscricaoCRMV\") VALUES ($1, $2) RETURNING id, name, \"inscricaoCRMV\" as inscricao_crmv", 
+        payload.name,
+        payload.inscricao_crmv)
+    .fetch_one(&pool)
+    .await.expect("Unable to query database table");
+    */
+
     (String::from("200"), String::from("ok"))
 }
 
