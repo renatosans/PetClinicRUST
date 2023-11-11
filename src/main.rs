@@ -32,11 +32,11 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(|| async { "Actix REST API" }))
             .service(
                 web::scope("/api")
-                    .service(pet::index)
                     .service(pet::select)
+                    .service(pet::update)
                     .service(pet::delete)
-                    .service(pet_owner::index)
                     .service(pet_owner::select)
+                    .service(pet_owner::update)
                     .service(pet_owner::delete)
             )
     })
