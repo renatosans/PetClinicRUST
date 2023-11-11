@@ -22,15 +22,29 @@ async fn select(pool: web::Data<PgPool>, owner_id: web::Path<i32>) -> Result<Htt
 
 #[patch("/owners/{owner_id}")]
 async fn update(pool: web::Data<PgPool>, owner_id: web::Path<i32>, payload: web::Json<Petowner>) -> Result<HttpResponse, Error> {
-    let car = web::block(move || {
-        let mut conn = pool.get().unwrap(); // TODO: fix unwrap
-        let result: Result<usize, Error> = diesel::update(cars_for_sale.find(car_id.into_inner())).set(payload.into_inner()).execute(&mut conn);
+    let owner = web::block(move || {
+        let connPool = pool.get_ref();
+
+        let owner_payload: Petowner = payload.into_inner();
+
+        let updated_owner = sqlx::query_as!(Petowner, "UPDATE petowner
+        SET (name, birth_date, email, phone, address) = ($2, $3, $4, $5, $6)
+        WHERE id = $1
+        RETURNING id, name, birth_date, email, phone, address",
+        owner_id.into_inner(),
+        owner_payload.name,
+        owner_payload.birth_date,
+        owner_payload.email,
+        owner_payload.phone,
+        owner_payload.address)
+        .fetch_one(connPool);
+
         return result;
     })
-    .await?
+    .await
     .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    Ok(HttpResponse::Ok().json(car))
+    Ok(HttpResponse::Ok().json(owner))
 }
 
 #[delete("/owners/{owner_id}")]
