@@ -17,9 +17,10 @@ async fn main() -> std::io::Result<()> {
     dotenv().expect("Unable to load environment variables from .env file");
     let database_url: String = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
 
-    let tokio_rt: Runtime = Runtime::new().unwrap();
     let pool_options = PgPoolOptions::new().max_connections(100);
-    let pool: PgPool = tokio_rt.block_on(pool_options.connect(&database_url)).expect("Unable to connect to database");
+    let pool: PgPool = pool_options.connect(&database_url)
+        .await
+        .expect("Unable to connect to database");
 
     HttpServer::new(move || {
         let cors = Cors::default().allow_any_origin().allow_any_method().allow_any_header();
