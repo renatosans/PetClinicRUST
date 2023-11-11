@@ -6,10 +6,9 @@ use actix_web::{get, post, patch, delete, web, HttpResponse, Error};
 
 #[get("/pets/{pet_id}")]
 async fn select(pool: web::Data<PgPool>, pet_id: web::Path<i32>) -> Result<HttpResponse, Error> {
-    let connPool = pool.get_ref();
-
     let pet = web::block(move || {
-        
+        let connPool = pool.get_ref();
+
         let result = sqlx::query_as!(Pet,"SELECT * FROM pet WHERE id = $1", pet_id.into_inner())
         .fetch_one(connPool);
 
@@ -35,9 +34,8 @@ async fn update(pool: web::Data<PgPool>, pet_id: web::Path<i32>, payload: web::J
 
 #[delete("/pets/{pet_id}")]
 async fn delete(pool: web::Data<PgPool>, pet_id: web::Path<i32>) -> Result<HttpResponse, Error> {
-    let connPool = pool.get_ref();
-
     let query_result = web::block(move || {
+        let connPool = pool.get_ref();
 
         let result = sqlx::query!("DELETE FROM pet WHERE id = $1", pet_id.into_inner())
         .execute(connPool);
