@@ -4,6 +4,16 @@ use sqlx::postgres::PgPool;     // sqlx
 use actix_web::{get, post, patch, delete, web, HttpResponse, Error};
 
 
+#[get("/owners")]
+async fn index(pool: web::Data<PgPool>) -> Result<HttpResponse, Error> {
+    let owners = sqlx::query_as!(Petowner,"SELECT * FROM petowner")
+    .fetch_all(&**pool)
+    .await
+    .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    Ok(HttpResponse::Ok().json(owners))
+}
+
 #[get("/owners/{owner_id}")]
 async fn select(pool: web::Data<PgPool>, owner_id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let owner = sqlx::query_as!(Petowner,"SELECT * FROM petowner WHERE id = $1", owner_id.into_inner())
