@@ -4,7 +4,8 @@ CREATE TABLE public.pet (
     name character varying(120) NOT NULL,
     breed character varying(45),
     age integer,
-    owner integer NOT NULL
+    owner integer NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE public.petowner (
@@ -13,26 +14,38 @@ CREATE TABLE public.petowner (
     birth_date date,
     email character varying(80) NOT NULL,
     phone character varying(45),
-    address character varying(120) NOT NULL
+    address character varying(120) NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE public.treatment (
     id SERIAL,
     description character varying(120) NOT NULL,
     pet integer NOT NULL,
-    veterinarian integer NOT NULL
+    veterinarian integer NOT NULL,
+    PRIMARY KEY (id)
 );
+
+ALTER TABLE treatment
+    add constraint fk_pet_treatment
+        foreign key (pet) references pet (id);
 
 CREATE TABLE public.vaccination (
     id SERIAL,
     description character varying(120) NOT NULL,
-    pet integer NOT NULL
+    pet integer NOT NULL,
+    PRIMARY KEY (id)
 );
+
+ALTER TABLE vaccination
+    add constraint fk_pet_vaccination
+        foreign key (pet) references pet (id);
 
 CREATE TABLE public.veterinarian (
     id SERIAL,
     name character varying(120) NOT NULL,
-    "inscricaoCRMV" character varying(75) NOT NULL
+    "inscricaoCRMV" character varying(75) NOT NULL,
+    PRIMARY KEY (id)
 );
 
 --
