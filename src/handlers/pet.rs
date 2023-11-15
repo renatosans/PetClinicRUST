@@ -18,7 +18,7 @@ async fn index(pool: web::Data<PgPool>) -> Result<HttpResponse, Error> {
 async fn create(pool: web::Data<PgPool>, payload: web::Json<Pet>) -> Result<HttpResponse, Error> {
     let pet_payload: Pet = payload.into_inner();
 
-    let inserted_pet = sqlx::query_as!(Pet, "INSERT INTO pet(name, breed, age, owner)
+    let inserted_pet: Pet = sqlx::query_as!(Pet, "INSERT INTO pet(name, breed, age, owner)
     VALUES ($1, $2, $3, $4)
     RETURNING id, name, breed, age, owner",
     pet_payload.name,
@@ -52,7 +52,7 @@ async fn select(pool: web::Data<PgPool>, pet_id: web::Path<i32>) -> Result<HttpR
 async fn update(pool: web::Data<PgPool>, pet_id: web::Path<i32>, payload: web::Json<Pet>) -> Result<HttpResponse, Error> {
     let pet_payload: Pet = payload.into_inner();
 
-    let updated_pet = sqlx::query_as!(Pet, "UPDATE pet
+    let updated_pet: Pet = sqlx::query_as!(Pet, "UPDATE pet
     SET (name, breed, age, owner) = ($2, $3, $4, $5)
     WHERE id = $1
     RETURNING id, name, breed, age, owner",
