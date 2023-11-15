@@ -56,10 +56,10 @@ CREATE TABLE public.veterinarian (
 -- Data for table pet
 --
 INSERT INTO pet ("name", "breed", "age", "owner") VALUES
-('Bethoven', 'Saint Bernard', 7, -1),
-('Molly', 'Golden Retriever', 4, -1),
-('Yoshi', 'Shiba Inu', 2, -1),
-('Thor', 'Beagle', 9, -1);
+('Bethoven', 'Saint Bernard', 7, NULL),
+('Molly', 'Golden Retriever', 4, NULL),
+('Yoshi', 'Shiba Inu', 2, NULL),
+('Thor', 'Beagle', 9, NULL);
 
 --
 -- Data for table veterinarian
