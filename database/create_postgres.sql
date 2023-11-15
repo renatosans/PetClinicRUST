@@ -1,3 +1,6 @@
+CREATE DATABASE pet_clinic;
+\c pet_clinic
+
 
 CREATE TABLE public.pet (
     id SERIAL,
