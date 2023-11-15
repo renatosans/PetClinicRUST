@@ -5,8 +5,7 @@ CREATE TABLE public.pet (
     breed character varying(45),
     age integer,
     owner integer NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (owner) REFERENCES petowner (id)
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE public.petowner (
@@ -18,6 +17,10 @@ CREATE TABLE public.petowner (
     address character varying(120) NOT NULL,
     PRIMARY KEY (id)
 );
+
+ALTER TABLE pet
+    add constraint fk_pet_owner
+        foreign key (owner) references petowner (id);
 
 CREATE TABLE public.treatment (
     id SERIAL,
