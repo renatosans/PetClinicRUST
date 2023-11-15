@@ -5,7 +5,8 @@ CREATE TABLE public.pet (
     breed character varying(45),
     age integer,
     owner integer NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (owner) REFERENCES petowner (id)
 );
 
 CREATE TABLE public.petowner (
