@@ -4,7 +4,7 @@ CREATE TABLE public.pet (
     name character varying(120) NOT NULL,
     breed character varying(45),
     age integer,
-    owner integer NOT NULL,
+    owner integer,
     PRIMARY KEY (id)
 );
 
