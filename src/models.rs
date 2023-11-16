@@ -14,7 +14,7 @@ pub struct Pet {
     pub name: String,
     pub breed: Option<String>,
     pub age: Option<i32>,
-    pub owner: i32,
+    pub owner: Option<i32>,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
