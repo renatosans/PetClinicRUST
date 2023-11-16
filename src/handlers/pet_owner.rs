@@ -35,7 +35,7 @@ async fn create(pool: web::Data<PgPool>, payload: web::Json<Petowner>) -> Result
 
 #[get("/owners/{owner_id}")]
 async fn select(pool: web::Data<PgPool>, owner_id: web::Path<i32>) -> Result<HttpResponse, Error> {
-    let owner = sqlx::query_as!(Petowner,"SELECT * FROM petowner WHERE id = $1", owner_id.into_inner())
+    let owner: Petowner = sqlx::query_as!(Petowner,"SELECT * FROM petowner WHERE id = $1", owner_id.into_inner())
     .fetch_one(&**pool)
     .await
     .map_err(actix_web::error::ErrorInternalServerError)?;
