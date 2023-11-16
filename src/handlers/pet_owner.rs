@@ -18,7 +18,7 @@ async fn index(pool: web::Data<PgPool>) -> Result<HttpResponse, Error> {
 async fn create(pool: web::Data<PgPool>, payload: web::Json<Petowner>) -> Result<HttpResponse, Error> {
     let owner_payload: Petowner = payload.into_inner();
 
-    let inserted_owner = sqlx::query_as!(Petowner, "INSERT INTO petowner(name, birth_date, email, phone, address)
+    let inserted_owner: Petowner = sqlx::query_as!(Petowner, "INSERT INTO petowner(name, birth_date, email, phone, address)
     VALUES ($1, $2, $3, $4, $5)
     RETURNING id, name, birth_date, email, phone, address",
     owner_payload.name,
@@ -47,7 +47,7 @@ async fn select(pool: web::Data<PgPool>, owner_id: web::Path<i32>) -> Result<Htt
 async fn update(pool: web::Data<PgPool>, owner_id: web::Path<i32>, payload: web::Json<Petowner>) -> Result<HttpResponse, Error> {
     let owner_payload: Petowner = payload.into_inner();
 
-    let updated_owner = sqlx::query_as!(Petowner, "UPDATE petowner
+    let updated_owner: Petowner = sqlx::query_as!(Petowner, "UPDATE petowner
     SET (name, birth_date, email, phone, address) = ($2, $3, $4, $5, $6)
     WHERE id = $1
     RETURNING id, name, birth_date, email, phone, address",
