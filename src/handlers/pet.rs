@@ -6,7 +6,7 @@ use actix_web::{get, post, patch, delete, web, HttpResponse, Error};
 
 #[get("/pets")]
 async fn index(pool: web::Data<PgPool>) -> Result<HttpResponse, Error> {
-    let pets = sqlx::query_as!(Pet,"SELECT * FROM pet")
+    let pets: Vec<Pet> = sqlx::query_as!(Pet,"SELECT * FROM pet")
     .fetch_all(&**pool)
     .await
     .map_err(actix_web::error::ErrorInternalServerError)?;
