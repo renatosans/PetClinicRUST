@@ -2,6 +2,13 @@ CREATE DATABASE pet_clinic;
 \c pet_clinic
 
 
+CREATE TABLE public.appointment (
+    id SERIAL,
+    date date,
+    veterinarian integer NOT NULL,
+    petowner integer NOT NULL
+);
+
 CREATE TABLE public.pet (
     id SERIAL,
     name character varying(120) NOT NULL,
