@@ -1,12 +1,6 @@
 CREATE DATABASE pet_clinic;
 \c pet_clinic
 
-CREATE TABLE public.appointment (
-    id SERIAL,
-    date date,
-    veterinarian integer NOT NULL,
-    petowner integer NOT NULL
-);
 
 CREATE TABLE public.pet (
     id SERIAL,
@@ -75,7 +69,7 @@ INSERT INTO pet ("name", "breed", "age", "owner") VALUES
 --
 
 INSERT INTO veterinarian ("name", "inscricaoCRMV") VALUES
-('CAROLINA CRISTINA DE SOUZA', 'SP 28509/V'),
-('VITOR CUNHA GASPAR', 'SP 28514/V'),
-('PEDRO ALVES DE MENDONCA NETO', 'SP 28516/V'),
-('PATRICIA MIDORE NAKADAKARI', 'SP 28519/V');
+('CINTIA', 'SP 5091234567890'),
+('GASPAR', 'SP 5141234567890'),
+('JOSE', 'SP 5161234567890'),
+('ANA CLAUDIA', 'SP 5191234567890');
