@@ -23,4 +23,5 @@ provoca a falha no build do container
 - rodando com uma instancia do POSTGRES na máquina de desenvolvimento e com o o banco já criado
 é possivel fazer a compilação normalmente e rodar o projeto
 - UPDATE: acrescentar ao Dockerfile a variável de ambiente SQLX_OFFLINE e usar o SQLX CLI para preparar os metadados https://www.lpalmieri.com/posts/2020-11-01-zero-to-production-5-how-to-deploy-a-rust-application/#3-3-sqlx-offline-mode
-![screenshot](assets/cfg_screenshot.jpg)
+
+<img src="assets/cfg_screenshot.jpg" width="150" height="200">
