@@ -24,4 +24,4 @@ provoca a falha no build do container
 é possivel fazer a compilação normalmente e rodar o projeto
 - UPDATE: acrescentar ao Dockerfile a variável de ambiente SQLX_OFFLINE e usar o SQLX CLI para preparar os metadados https://www.lpalmieri.com/posts/2020-11-01-zero-to-production-5-how-to-deploy-a-rust-application/#3-3-sqlx-offline-mode
 
-<img src="assets/cfg_screenshot.jpg" width="150" height="200">
+<img src="assets/cfg_screenshot.jpg" width="350" height="420">
