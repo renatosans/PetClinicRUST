@@ -8,6 +8,8 @@ ENV DATABASE_URL=$DATABASE_URL
 
 COPY . . 
 
+ENV SQLX_OFFLINE true
+
 RUN cargo build --release
 
 # Production stage
