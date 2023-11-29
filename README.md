@@ -15,9 +15,10 @@ API em rust para consultório veterinário
 
 ## Steps to run the project:
 - Run the sql artifact at /database/create_postgres.sql
-- Cargo run (verificar se o compilador conectou ao Postgres e validou o sql do projeto)
+- cargo run (verificar se o compilador conectou ao Postgres e validou o sql do projeto)
 - cargo sqlx prepare (para gerar a pasta com os metadados sql)
 - docker compose up
+- Follow the link:  http://localhost:8080/api/pets
 
 
 ## Incompatibilidade encontrada entre o Docker e o SQLX

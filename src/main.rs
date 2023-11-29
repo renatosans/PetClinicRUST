@@ -2,7 +2,7 @@ mod schema;
 mod models;
 mod handlers;
 
-use dotenv::dotenv;
+// use dotenv::dotenv;
 use handlers::pet;
 use handlers::pet_owner;
 use actix_cors::Cors;
@@ -13,7 +13,8 @@ use sqlx::postgres::{PgPool, PgPoolOptions};     // sqlx
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    dotenv().expect("Unable to load environment variables from .env file");
+    // environment vars passadas via docker compose,  remover o comentário para rodar localmente
+    // dotenv().expect("Unable to load environment variables from .env file");
     let database_url: String = std::env::var("DATABASE_URL").expect("Unable to read DATABASE_URL env var");
 
     let pool_options = PgPoolOptions::new().max_connections(100);

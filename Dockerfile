@@ -18,5 +18,6 @@ FROM debian:buster-slim
 WORKDIR /usr/local/bin
 
 COPY --from=builder /app/target/release/rust-pet-clinic .
+RUN apt-get update && apt install -y openssl
 
 CMD ["./rust-pet-clinic"]
