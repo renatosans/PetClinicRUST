@@ -8,6 +8,15 @@ use chrono::NaiveDate;
 use serde::{Serialize, Deserialize};
 // use diesel::prelude::*;
 
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Appointment {
+    pub id: Option<i32>,
+    pub date: Option<NaiveDate>,
+    pub veterinarian: i32,
+    pub petowner: i32,
+}
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Pet {
     pub id: Option<i32>,
@@ -15,6 +24,7 @@ pub struct Pet {
     pub breed: Option<String>,
     pub age: Option<i32>,
     pub owner: Option<i32>,
+    pub flag_removed: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
