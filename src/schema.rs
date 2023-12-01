@@ -2,6 +2,15 @@
 
 /*
 diesel::table! {
+    appointment (id) {
+        id -> Int4,
+        date -> Nullable<Date>,
+        veterinarian -> Int4,
+        petowner -> Int4,
+    }
+}
+
+diesel::table! {
     pet (id) {
         id -> Int4,
         #[max_length = 120]
@@ -9,7 +18,8 @@ diesel::table! {
         #[max_length = 45]
         breed -> Nullable<Varchar>,
         age -> Nullable<Int4>,
-        owner -> Int4,
+        owner -> Nullable<Int4>,
+        flag_removed -> Bool,
     }
 }
 
@@ -53,8 +63,7 @@ diesel::table! {
         #[max_length = 120]
         name -> Varchar,
         #[max_length = 75]
-        #[sql_name = "inscricaoCRMV"]
-        inscricao_crmv -> Varchar,
+        inscricaoCRMV -> Varchar,
     }
 }
 
@@ -63,6 +72,7 @@ diesel::joinable!(treatment -> veterinarian (veterinarian));
 diesel::joinable!(vaccination -> pet (pet));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    appointment,
     pet,
     petowner,
     treatment,
