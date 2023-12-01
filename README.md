@@ -18,6 +18,7 @@ API em rust para consultório veterinário
 - set the enviroment variable DATABASE_URL (you can also use dotenv crate to pass .env file)
 - cargo run (verificar se o compilador conectou ao Postgres e validou o sql do projeto)
 - cargo sqlx prepare (para gerar a pasta com os metadados sql)
+- apague a pasta .sqlx se for acrescentada alguma coluna nas tabelas e rode "cargo sqlx prepare" novamente
 - docker compose up
 - Follow the link:  http://localhost:8080/api/pets
 
