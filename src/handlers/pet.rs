@@ -54,14 +54,15 @@ async fn update(pool: web::Data<PgPool>, pet_id: web::Path<i32>, payload: web::J
     let pet_payload: Pet = payload.into_inner();
 
     let updated_pet: Pet = sqlx::query_as!(Pet, "UPDATE pet
-    SET (name, breed, age, owner) = ($2, $3, $4, $5)
+    SET (name, breed, age, owner, flag_removed) = ($2, $3, $4, $5, $6)
     WHERE id = $1
-    RETURNING id, name, breed, age, owner",
+    RETURNING id, name, breed, age, owner, flag_removed",
     pet_id.into_inner(),
     pet_payload.name,
     pet_payload.breed,
     pet_payload.age,
-    pet_payload.owner)
+    pet_payload.owner,
+    pet_payload.flag_removed)
     .fetch_one(&**pool)
     .await
     .map_err(actix_web::error::ErrorInternalServerError)?;
