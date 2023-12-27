@@ -2,6 +2,7 @@ mod utils;
 mod schema;
 mod models;
 mod domain;
+mod repository;
 mod handlers;
 
 // use dotenv::dotenv;
