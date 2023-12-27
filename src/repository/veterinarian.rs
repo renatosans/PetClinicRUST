@@ -31,7 +31,11 @@ impl Repository<Veterinarian> for VeterinarianRepository {
     }
 
     async fn remove(&mut self, id: i32) -> Result<(), Error> {
-        // TODO: implementar usando sqlx
+        let _query_result = sqlx::query!("DELETE FROM veterinarian WHERE id = $1", id)
+        .execute(&self.pool)
+        .await
+        .map_err(Error::from)?;
+
         Ok(())
     }
 
