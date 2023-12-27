@@ -1,4 +1,4 @@
-use chrono::NaiveDate;
+use crate::utils::domainErrors::DomainError;
 
 #[derive(Default, Debug)]
 pub struct Treatment {
