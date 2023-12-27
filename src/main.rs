@@ -1,3 +1,4 @@
+mod utils;
 mod schema;
 mod models;
 mod domain;
