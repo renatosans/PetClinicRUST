@@ -1,0 +1,34 @@
+[
+	{
+		"id" : 1,
+		"name" : "Bethoven",
+		"breed" : "Saint Bernard",
+		"age" : 7,
+		"owner" : null,
+		"flag_removed" : false
+	},
+	{
+		"id" : 2,
+		"name" : "Molly",
+		"breed" : "Golden Retriever",
+		"age" : 4,
+		"owner" : null,
+		"flag_removed" : false
+	},
+	{
+		"id" : 3,
+		"name" : "Yoshi",
+		"breed" : "Shiba Inu",
+		"age" : 2,
+		"owner" : null,
+		"flag_removed" : false
+	},
+	{
+		"id" : 4,
+		"name" : "Thor",
+		"breed" : "Beagle",
+		"age" : 9,
+		"owner" : null,
+		"flag_removed" : false
+	}
+]

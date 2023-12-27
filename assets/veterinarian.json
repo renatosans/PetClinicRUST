@@ -1,0 +1,22 @@
+[
+	{
+		"id" : 1,
+		"name" : "CINTIA",
+		"inscricaoCRMV" : "SP 5091234567890"
+	},
+	{
+		"id" : 2,
+		"name" : "GASPAR",
+		"inscricaoCRMV" : "SP 5141234567890"
+	},
+	{
+		"id" : 3,
+		"name" : "JOSE",
+		"inscricaoCRMV" : "SP 5161234567890"
+	},
+	{
+		"id" : 4,
+		"name" : "ANA CLAUDIA",
+		"inscricaoCRMV" : "SP 5191234567890"
+	}
+]

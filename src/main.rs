@@ -1,5 +1,6 @@
 mod schema;
 mod models;
+mod domain;
 mod handlers;
 
 // use dotenv::dotenv;
