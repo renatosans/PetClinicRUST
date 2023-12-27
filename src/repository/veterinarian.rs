@@ -24,10 +24,14 @@ impl Repository<Veterinarian> for VeterinarianRepository {
         Ok(())
     }
 
-    async fn get_by_id(&self, id: i32) -> Option<Veterinarian> {
-        let veterinarian = Veterinarian::default();
-        // TODO: implementar usando sqlx
-        Some(veterinarian)
+    async fn get_by_id(&self, id: i32) -> Result<Option<Veterinarian>, Error> {
+        match sqlx::query_as!(Veterinarian,"SELECT id, name, \"inscricaoCRMV\" as inscricao_crmv FROM veterinarian WHERE id = $1", id)
+        .fetch_optional(&self.pool)
+        .await
+        {
+            Ok(veterinarian) => Ok(veterinarian),
+            Err(err) => Err(Error::from(err))
+        }
     }
 
     async fn remove(&mut self, id: i32) -> Result<(), Error> {
