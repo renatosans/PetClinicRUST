@@ -1,1 +1,1 @@
-pub mod domainErrors;
+pub mod domain_error;

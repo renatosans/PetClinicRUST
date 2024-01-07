@@ -1,4 +1,5 @@
-use crate::utils::domainErrors::DomainError;
+use crate::utils::domain_error::DomainError;
+
 
 #[derive(Default, Debug)]
 pub struct Veterinarian {

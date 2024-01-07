@@ -5,7 +5,7 @@ mod domain;
 mod repository;
 mod handlers;
 
-// use dotenv::dotenv;
+
 use handlers::pet;
 use handlers::pet_owner;
 use actix_cors::Cors;
