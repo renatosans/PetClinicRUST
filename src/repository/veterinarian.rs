@@ -19,9 +19,17 @@ impl VeterinarianRepository {
 
 #[async_trait]
 impl Repository<Veterinarian> for VeterinarianRepository {
-    async fn insert(&self, _payload: Veterinarian) -> Result<(), Error> {
-        // TODO: implementar usando sqlx
-        Ok(())
+    async fn insert(&self, payload: Veterinarian) -> Result<Veterinarian, Error> {
+        let inserted = sqlx::query_as!(Veterinarian, "INSERT INTO veterinarian (id, name, \"inscricaoCRMV\")
+        VALUES ($1, $2, $3)
+        RETURNING id, name, \"inscricaoCRMV\" as inscricao_crmv",
+        payload.id,
+        payload.name,
+        payload.inscricao_crmv)
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(inserted)
     }
 
     async fn get_by_id(&self, id: i32) -> Result<Option<Veterinarian>, Error> {

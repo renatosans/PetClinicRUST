@@ -5,7 +5,6 @@ mod domain;
 mod repository;
 mod handlers;
 
-
 use handlers::pet;
 use handlers::pet_owner;
 use actix_cors::Cors;
@@ -46,6 +45,7 @@ async fn main() -> std::io::Result<()> {
                     .service(pet_owner::select)
                     .service(pet_owner::update)
                     .service(pet_owner::delete)
+                    .service(handlers::veterinarian::post_vet)
             )
     })
     .bind(("0.0.0.0", 8080))?
