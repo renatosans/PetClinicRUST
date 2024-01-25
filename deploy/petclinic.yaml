@@ -9,4 +9,85 @@ kind: Service
 metadata:
   name: petclinic-db
   namespace: petclinic
-#...
+spec:
+  ports:
+  - name: "5432"
+    port: 5432
+    targetPort: 5432
+  selector:
+    app: db
+    tier: postgres
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic-petclinic
+  namespace: petclinic
+spec:
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+  selector:
+    name: petclinic
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic-db
+  namespace: petclinic
+spec:
+  selector:
+    matchLabels:
+      app: db
+      tier: postgres
+  template:
+    metadata:
+      labels:
+        app: db
+        tier: postgres
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_DB
+          value: golang_clinic
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        image: postgres:latest
+        imagePullPolicy: IfNotPresent
+        name: postgres
+        ports:
+        - containerPort: 5432
+        resources:
+          limits:
+            cpu: 500m
+            memory: 128Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic-petclinic
+  namespace: petclinic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: petclinic
+  template:
+    metadata:
+      labels:
+        name: petclinic
+    spec:
+      containers:
+      - name: petclinic
+        image: petclinic
+        imagePullPolicy: Never
+        env:
+        - name: DATABASE_URL
+          value: postgres://postgres:postgres@db:5432/golang_clinic
+        ports:
+        - containerPort: 3000
