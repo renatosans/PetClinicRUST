@@ -2,7 +2,7 @@ use serde::{Serialize, Deserialize};
 use crate::utils::domain_error::DomainError;
 
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Default, Serialize, Deserialize, Debug)]
 pub struct Veterinarian {
     pub id: Option<i32>,
     pub name: String,

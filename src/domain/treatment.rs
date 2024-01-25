@@ -1,16 +1,16 @@
 // use uuid::Uuid;
 use crate::utils::domain_error::DomainError;
-
+use crate::domain::veterinarian::Veterinarian;
 
 #[derive(Default, Debug)]
 pub struct Treatment {
     pub id: Option<i32>,
     pub description: String,
     pub pet: i32,
-    pub veterinarian: i32,
+    pub veterinarian: Veterinarian,
 }
 
-fn new_treatment(description: String, pet: i32, veterinarian: i32) -> Result<Treatment, DomainError> {
+pub fn new_treatment(description: String, pet: i32, veterinarian: Veterinarian) -> Result<Treatment, DomainError> {
     // let uuid = Some(Uuid::new_v4());
 
     let obj = Treatment {
@@ -25,7 +25,6 @@ fn new_treatment(description: String, pet: i32, veterinarian: i32) -> Result<Tre
     }
     Ok(obj)
 }
-
 
 impl Treatment {
     pub fn validate(&self) -> bool {
