@@ -1,4 +1,5 @@
 // use uuid::Uuid;
+use serde::{Serialize, Deserialize};
 use sqlx::postgres::PgPool;
 use actix_web::{get, post, web, HttpResponse, Error};
 use crate::repository::repository::Repository;
@@ -6,12 +7,17 @@ use crate::domain::treatment::{new_treatment, Treatment};
 use crate::domain::veterinarian::{new_veterinarian, Veterinarian};
 use crate::repository::veterinarian::VeterinarianRepository;
 
+#[derive(Default, Serialize, Deserialize, Debug)]
+pub struct Pet {
+    id: i32
+}
 
 // TODO: implementar o use case de preescrição
 #[post("/receitar_tratamento")]
-async fn receitar_tratamento(pool: web::Data<PgPool>, pet: web::Json<i32>/*...Json<Uuid>*/ ) -> Result<HttpResponse, Error> {
+async fn receitar_tratamento(_pool: web::Data<PgPool>, pet: web::Json<Pet>/*...Json<Uuid>*/ ) -> Result<HttpResponse, Error> {
+    let pet: Pet = pet.into_inner();
     let veterinarian: Veterinarian = new_veterinarian("Doctor Who".to_string(), "SP 9876543210".to_string()).unwrap();
-    let treatment: Treatment = new_treatment("antibiótico".to_string(), pet.into_inner(), veterinarian).unwrap();
+    let treatment: Treatment = new_treatment("antibiótico".to_string(), pet.id, veterinarian).unwrap();
 
     Ok(HttpResponse::Ok().json(treatment))
 }

@@ -1,4 +1,5 @@
+.sqlx
 /target
 .env
 .idea
-.sqlx
+.vscode
