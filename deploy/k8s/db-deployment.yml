@@ -20,7 +20,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: POSTGRES_DB
-          value: golang_clinic
+          value: pet_clinic
         - name: POSTGRES_USER
           value: postgres
         - name: POSTGRES_PASSWORD
