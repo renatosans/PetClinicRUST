@@ -17,7 +17,7 @@ API em rust para consultório veterinário
 - cargo sqlx prepare (para gerar a pasta com os metadados sql, se desejar suba no controle de versão)
   >  cargo sqlx prepare
 
-  >  query data written to .sqlx in the current directory; please check this into version control
+  `query data written to .sqlx in the current directory; please check this into version control`
 
 - docker compose up
 - Follow the link:  http://localhost:3000/api/pets
