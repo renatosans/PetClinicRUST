@@ -1,0 +1,24 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: petclinic
+  template:
+    metadata:
+      labels:
+        name: petclinic
+    spec:
+      containers:
+      - name: petclinic
+        image: petclinic
+        imagePullPolicy: Never
+        env:
+        - name: DATABASE_URL
+          value: postgres://postgres:postgres@db:5432/golang_clinic
+        ports:
+          - containerPort: 3000

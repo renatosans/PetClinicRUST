@@ -1,8 +1,10 @@
 // use uuid::Uuid;
+use serde::{Serialize, Deserialize};
 use crate::utils::domain_error::DomainError;
 use crate::domain::veterinarian::Veterinarian;
 
-#[derive(Default, Debug)]
+
+#[derive(Default, Serialize, Deserialize, Debug)]
 pub struct Treatment {
     pub id: Option<i32>,
     pub description: String,

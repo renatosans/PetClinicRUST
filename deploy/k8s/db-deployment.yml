@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: db
+      tier: postgres 
+  template:
+    metadata:
+      labels:
+        app: db
+        tier: postgres 
+    spec:
+      containers:
+      - name: postgres 
+        image: postgres:latest 
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: POSTGRES_DB
+          value: golang_clinic
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          value: postgres
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"    
+        ports:
+        - containerPort: 5432  

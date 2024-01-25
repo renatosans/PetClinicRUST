@@ -50,6 +50,7 @@ async fn main() -> std::io::Result<()> {
                     .service(pet_owner::update)
                     .service(pet_owner::delete)
                     .service(handlers::veterinarian::post_vet)
+                    .service(handlers::veterinarian::receitar_tratamento)
             )
     })
     .bind(("0.0.0.0", 3000))?
