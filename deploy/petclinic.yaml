@@ -1,0 +1,12 @@
+# consolidated manifest (built with kustomize)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: petclinic
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic-db
+  namespace: petclinic
+#...
