@@ -88,6 +88,6 @@ spec:
         imagePullPolicy: Never
         env:
         - name: DATABASE_URL
-          value: postgres://postgres:postgres@db:5432/pet_clinic
+          value: postgres://postgres:postgres@petclinic-db.petclinic.svc.cluster.local:5432/pet_clinic
         ports:
         - containerPort: 3000
